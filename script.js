@@ -1,24 +1,28 @@
 // script.js
-const video = document.querySelector('.viewer');
-const speed = document.querySelector('.speed');
-const speedBar = document.querySelector('.speed-bar');
+const video = document.querySelector('.player__video');
+const toggle = document.querySelector('.toggle');
+const rewindButton = document.querySelector('.rewind');
+const fastForwardButton = document.querySelector('.fast-forward');
 
-function handleSpeedChange(e) {
-    const y = e.pageY - speed.offsetTop;
-    const percent = y / speed.offsetHeight;
-    const min = 0.5;
-    const max = 2;
-    const height = Math.round(percent * 100) + '%';
-    const playbackRate = percent * (max - min) + min;
-    speedBar.style.height = height;
-    speedBar.textContent = playbackRate.toFixed(2) + '×';
-    video.playbackRate = playbackRate;
+function togglePlay() {
+    const method = video.paused ? 'play' : 'pause';
+    video[method]();
 }
 
-speed.addEventListener('mousemove', (e) => {
-    if (e.buttons === 1) {
-        handleSpeedChange(e);
-    }
-});
+function updateButton() {
+    const icon = video.paused ? '►' : '❚ ❚';
+    toggle.textContent = icon;
+}
 
-speed.addEventListener('mousedown', handleSpeedChange);
+function skip() {
+    const skipValue = parseFloat(this.dataset.skip);
+    video.currentTime += skipValue;
+}
+
+video.addEventListener('click', togglePlay);
+video.addEventListener('play', updateButton);
+video.addEventListener('pause', updateButton);
+
+toggle.addEventListener('click', togglePlay);
+rewindButton.addEventListener('click', skip);
+fastForwardButton.addEventListener('click', skip);
